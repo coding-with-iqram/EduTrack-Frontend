@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function QuizAnswerReview() {
   const { state } = useLocation();
+  const navigate = useNavigate();
   const { answers, questions } = state || {};
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -17,7 +18,6 @@ function QuizAnswerReview() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-10">
       <div className="bg-white border border-gray-200 rounded-xl shadow-[0_6px_24px_rgba(0,0,0,0.1)] p-8">
-
         {/* Progress Bar */}
         <div className="mb-4">
           <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -32,13 +32,13 @@ function QuizAnswerReview() {
 
         {/* Header */}
         <div className="flex justify-between items-center text-sm text-gray-500 mb-4 px-1">
-          <span className="font-medium">Quiz No. 2</span>
+          <span className="font-medium">{`Quiz Review`}</span>
           <span>{`Question ${currentIndex + 1} of ${questions.length}`}</span>
         </div>
 
         {/* Question */}
-        <p className="text-base font-semibold mb-10 text-black pl-30">
-          {`1.${currentIndex + 1}`} {cleanedQuestion}
+        <p className="text-base font-semibold mb-10 text-black">
+          {`Q.${currentIndex + 1}`} {cleanedQuestion}
         </p>
 
         {/* Options */}
@@ -47,11 +47,14 @@ function QuizAnswerReview() {
             const isCorrect = option === item.correct;
             const isWrong = option === item.selected && option !== item.correct;
 
-            let style = "bg-[#f5f5f5] border border-gray-300 text-gray-800";
+            let style =
+              "bg-[#f5f5f5] border border-gray-300 text-gray-800 hover:cursor-default";
             if (isCorrect) {
-              style = "bg-[#2ecc71] border border-[#2ecc71] text-white font-semibold";
+              style =
+                "bg-[#2ecc71] border border-[#2ecc71] text-white font-semibold";
             } else if (isWrong) {
-              style = "bg-red-600 border border-red-600 text-white font-semibold";
+              style =
+                "bg-red-600 border border-red-600 text-white font-semibold";
             }
 
             return (
@@ -62,19 +65,23 @@ function QuizAnswerReview() {
                 <span className="w-5 h-5 flex items-center justify-center">
                   {isCorrect && (
                     <span className="w-5 h-5 rounded-sm bg-white border-2 border-[#2ecc71] flex items-center justify-center">
-                      <span className="text-[#2ecc71] text-sm font-bold leading-none">✔</span>
+                      <span className="text-[#2ecc71] text-sm font-bold leading-none">
+                        ✔
+                      </span>
                     </span>
                   )}
                   {isWrong && (
                     <span className="w-5 h-5 rounded-sm bg-white border-2 border-red-600 flex items-center justify-center">
-                      <span className="text-red-600 text-sm font-bold leading-none">✖</span>
+                      <span className="text-red-600 text-sm font-bold leading-none">
+                        ✖
+                      </span>
                     </span>
                   )}
                   {!isCorrect && !isWrong && (
                     <span className="inline-block w-5 h-5 rounded-sm border border-gray-400"></span>
                   )}
                 </span>
-                <span>{option.replace(/^[a-d]\)\s*/i, '')}</span>
+                <span>{option.replace(/^[a-d]\)\s*/i, "")}</span>
               </div>
             );
           })}
@@ -90,11 +97,18 @@ function QuizAnswerReview() {
             Previous
           </button>
           <button
-            onClick={() => setCurrentIndex((prev) => prev + 1)}
-            disabled={currentIndex === answers.length - 1}
-            className="w-32 px-4 py-2 rounded-full bg-purple-600 text-white font-medium hover:bg-purple-700 transition disabled:opacity-50"
+            onClick={() =>
+              currentIndex === answers.length - 1
+                ? navigate("/quiz")
+                : setCurrentIndex((prev) => prev + 1)
+            }
+            className={`w-32 px-4 py-2 rounded-full font-medium transition ${
+              currentIndex === answers.length - 1
+                ? "bg-green-600 text-white hover:bg-green-700"
+                : "bg-purple-600 text-white hover:bg-purple-700"
+            }`}
           >
-            Next
+            {currentIndex === answers.length - 1 ? "Finish" : "Next"}
           </button>
         </div>
       </div>
@@ -102,7 +116,7 @@ function QuizAnswerReview() {
       {/* Start Quiz Again (Outside the Box) */}
       <div className="flex justify-end mt-6">
         <button
-          onClick={() => window.location.href = "/quiz"} // Adjust path if needed
+          onClick={() => navigate("/quiz")}
           className="px-6 py-2 rounded-full bg-purple-600 text-white font-medium hover:bg-purple-700 shadow-lg shadow-purple-300 transition"
         >
           Start Quiz Again

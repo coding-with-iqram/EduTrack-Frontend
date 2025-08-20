@@ -1,0 +1,142 @@
+/* Basic reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Navigation styles */
+nav {
+  background-color: #6200ee;
+  padding: 1rem;
+}
+
+nav a {
+  color: white;
+  margin-right: 1rem;
+  text-decoration: none;
+  font-size: 1.2rem;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* Quiz styles */
+.quiz {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.question-section {
+  margin-bottom: 2rem;
+}
+
+.question-count {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.question-text {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.answer-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.answer-section button {
+  padding: 1rem;
+  font-size: 1rem;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.answer-section button:hover {
+  background: #e0e0e0;
+}
+
+.score-section {
+  font-size: 2rem;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+/* Notes styles */
+.notes-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.note-form {
+  margin-bottom: 2rem;
+}
+
+.note-form input,
+.note-form textarea {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+.note-form textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+.note-form button {
+  padding: 0.5rem 1rem;
+  background: #6200ee;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.notes-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.note-card {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 5px;
+  background: white;
+}
+.previous-questions {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.question-item {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  background: white;
+}
+
+.question-item h3 {
+  margin-bottom: 0.5rem;
+  padding-left: 1.5rem;
+}
+
+.answer-list li {
+  margin-bottom: 0.3rem;
+}
+
+.correct-answer {
+  color: green;
+  font-weight: bold;
+}

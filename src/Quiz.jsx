@@ -1,16 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import confetti from "canvas-confetti";
-
-// const commonBackground = "bg-gradient-to-br from-[#e0e7ff] via-[#f3f4f6] to-[#c7d2fe]";
-// const commonBackground = "bg-[#ffff]";
 
 function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
-  const [questions, setQuestions] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [answers, setAnswers] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
   const [timeLeft, setTimeLeft] = useState(10);
@@ -18,35 +13,84 @@ function Quiz() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const loadQuiz = async () => {
-      try {
-        const res = await fetch(
-          "https://exam-preparation.glitch.me/api/quizzes"
-        );
-        const data = await res.json();
-        setQuestions(data);
-      } catch (err) {
-        console.error("Quiz load failed:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadQuiz();
-  }, []);
+  // ✅ Static quiz data (instead of API call)
+  const questions = [
+    {
+      question: "What is an Activity in Android?",
+      options: [
+        "a) A background service",
+        "b) A single screen with a user interface",
+        "c) A database storage",
+        "d) A system permission",
+      ],
+      correctAnswer: "b) A single screen with a user interface",
+    },
+    {
+      question: "Which file stores the UI design in Android apps?",
+      options: [
+        "a) MainActivity.java",
+        "b) AndroidManifest.xml",
+        "c) layout XML file",
+        "d) strings.xml",
+      ],
+      correctAnswer: "c) layout XML file",
+    },
+    {
+      question: "What does APK stand for?",
+      options: [
+        "a) Android Phone Kit",
+        "b) Android Package Kit",
+        "c) App Processing Key",
+        "d) Application Programming Kernel",
+      ],
+      correctAnswer: "b) Android Package Kit",
+    },
+    {
+      question: "Which language is NOT commonly used for Android app development?",
+      options: ["a) Java", "b) Kotlin", "c) Python", "d) C++"],
+      correctAnswer: "c) Python",
+    },
+    {
+      question: "What is the function of RecyclerView?",
+      options: [
+        "a) To display large sets of data efficiently",
+        "b) To store app preferences",
+        "c) To manage background tasks",
+        "d) To display system notifications",
+      ],
+      correctAnswer: "a) To display large sets of data efficiently",
+    },
+    {
+      question: "Which component is used to interact with a database in Android?",
+      options: ["a) SQLite", "b) Intent", "c) Service", "d) BroadcastReceiver"],
+      correctAnswer: "a) SQLite",
+    },
+    {
+      question: "What is the use of AndroidManifest.xml?",
+      options: [
+        "a) To declare app permissions, activities, and services",
+        "b) To store multimedia files",
+        "c) To design UI layouts",
+        "d) To manage system hardware",
+      ],
+      correctAnswer: "a) To declare app permissions, activities, and services",
+    },
+  ];
 
+  // 🎉 Confetti on finish
   useEffect(() => {
     if (showScore) {
       confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
     }
   }, [showScore]);
 
+  // Timer logic
   useEffect(() => {
-    if (showScore || isLoading || questions.length === 0) return;
+    if (showScore || questions.length === 0) return;
 
     let start = Date.now();
     const duration = 10000; // 10 seconds
-    const tickInterval = 50; // update every 50ms
+    const tickInterval = 50;
 
     const interval = setInterval(() => {
       const elapsed = Date.now() - start;
@@ -60,12 +104,13 @@ function Quiz() {
     }, tickInterval);
 
     return () => clearInterval(interval);
-  }, [currentQuestion, showScore, isLoading]);
+    // eslint-disable-next-line
+  }, [currentQuestion, showScore]);
 
   useEffect(() => {
     const previous = answers[currentQuestion]?.selected || null;
     setSelectedOption(previous);
-  }, [currentQuestion]);
+  }, [currentQuestion, answers]);
 
   const handleAnswer = (selected) => {
     const currentQ = questions[currentQuestion];
@@ -120,23 +165,9 @@ function Quiz() {
     ((currentQuestion + (answers[currentQuestion]?.selected ? 1 : 0)) /
       questions.length) *
     100;
-  // const timerProgress = (timeLeft / 10) * 100;
-
-  if (isLoading || questions.length === 0) {
-    return (
-      <div className={`flex items-center justify-center min-h-screen`}>
-        <div className="text-center">
-          <div className="animate-spin h-12 w-12 border-4 border-indigo-500 border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-indigo-700 font-medium">Loading...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div
-      className={`min-h-screen flex items-center justify-center px-4 py-10 `}
-    >
+    <div className="min-h-screen flex items-center justify-center px-4 py-10">
       <div className="max-w-xl w-full font-sans">
         {!showScore && (
           <div className="w-full h-2 bg-indigo-100 rounded mt-[2px] mb-4">

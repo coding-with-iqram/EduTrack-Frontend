@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { FaPencilAlt, FaEdit, FaTrashAlt } from "react-icons/fa";
 
+// সব ভিডিও একত্রে
 const allVideos = [
+  // Kotlin Videos
   {
     title: "What is Kotlin? Introduction To Kotlin Tutorial | CheezyCode #1",
     url: "https://www.youtube.com/embed/vhfzN69ALpY?si=goOEin9SqGUMLqdR",
@@ -15,10 +17,25 @@ const allVideos = [
     title: "Kotlin - Hello World Program | CheezyCode #3",
     url: "https://www.youtube.com/embed/IdeqQE_POXo?si=FhVRHH7lG1rNZjXz",
   },
+
+  // C++ Videos
+  {
+    title: "Lecture 1: Flowchart & Pseudocode | C++ DSA Series",
+    url: "https://www.youtube.com/embed/VTLCoHnyACE?si=Q9-CqiqOnQj6V2ZR",
+  },
+  {
+    title: "Lecture 2: Variables, Data Types & Operators | C++ DSA",
+    url: "https://www.youtube.com/embed/Dxu7GKtdbnA?si=-j_9ucqlJhQk1KFj",
+  },
+  {
+    title: "Lecture 3: Conditionals & Loops | C++ DSA",
+    url: "https://www.youtube.com/embed/qR9U6bKxJ7g?si=v_KhapOgsg3ZEy83",
+  },
 ];
 
 export default function VideoPlayer() {
   const { idx } = useParams();
+  const navigate = useNavigate();
   const videoIndex = parseInt(idx, 10);
   const video = allVideos[videoIndex];
 
@@ -93,6 +110,7 @@ export default function VideoPlayer() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-start pt-10 relative">
+
       {/* View Note Popup */}
       {selectedNote && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
@@ -187,17 +205,54 @@ export default function VideoPlayer() {
           </button>
 
           <button
-            className="md:hidden fixed bottom-6 right-6 bg-indigo-600 border border-indigo-600 rounded-full p-3 shadow flex items-center justify-center z-30 transition-all duration-200 hover:scale-110"
-            onClick={() => setShowNotePopup(prev => !prev)}
+            className="md:hidden fixed bottom-6 right-6 bg-indigo-600 border border-indigo-600 rounded-full p-3 shadow flex items-center justify-center z-30 transition-all duration-200
+                      hover:scale-110"
+          onClick={() => setShowNotePopup(prev => !prev)}
           >
             <FaPencilAlt className="text-white text-2xl" />
+          </button>
+        </div>
+
+        {/* Previous / Next Buttons */}
+        <div className="flex justify-between w-full mt-6">
+          <button
+            disabled={videoIndex === 0}
+            onClick={() => navigate(`/video/${videoIndex - 1}`)}
+            className={`px-6 py-2 rounded-full border transition-transform duration-200 ${
+              videoIndex === 0
+                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                : "bg-white text-purple-700 hover:bg-purple-700 hover:text-white hover:scale-110"
+            }`}
+          >
+            Previous
+          </button>
+          <button
+            disabled={videoIndex === allVideos.length - 1}
+            onClick={() => navigate(`/video/${videoIndex + 1}`)}
+            className={`px-6 py-2 rounded-full border transition-transform duration-200 ${
+              videoIndex === allVideos.length - 1
+                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                : "bg-white text-purple-700 hover:bg-purple-700 hover:text-white hover:scale-110"
+            }`}
+          >
+            Next
+          </button>
+        </div>
+
+        {/* Back Button */}
+        <div className="w-full flex justify-center mt-6">
+          <button
+            onClick={() => navigate("/")}
+            className="px-8 py-2 bg-white border border-purple-700 text-purple-700 rounded-full font-semibold hover:bg-purple-700 hover:text-white transition-transform duration-200 hover:scale-110"
+          >
+            Back
           </button>
         </div>
       </div>
 
       {/* Notes Section */}
       {notes.length > 0 && (
-               <div className="w-full max-w-5xl mx-auto mt-10 bg-white rounded-xl shadow-md p-6">
+        <div className="w-full max-w-5xl mx-auto mt-10 bg-white rounded-xl shadow-md p-6">
           <h3 className="text-2xl font-bold text-purple-700 mb-6 text-center">Your Notes</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {notes.map((n, i) => (
@@ -205,10 +260,7 @@ export default function VideoPlayer() {
                 key={i}
                 className="border border-gray-300 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition"
               >
-                {/* প্রশ্ন: bold */}
                 <h4 className="text-md font-bold text-black mb-4">{n.title}</h4>
-
-                {/* আইকন: নিচে এবং ডান পাশে */}
                 <div className="flex justify-end gap-3">
                   <button
                     className="px-3 py-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 text-sm"

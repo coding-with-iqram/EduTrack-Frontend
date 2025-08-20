@@ -33,6 +33,8 @@ export default function SuggestedVideo() {
     },
   ];
 
+  const allVideos = [...kotlinVideos, ...cppVideos];
+
   const navigate = useNavigate();
   const [activeVideo, setActiveVideo] = useState(null);
   const [popupPos, setPopupPos] = useState({ x: 0, y: 0 });
@@ -80,7 +82,6 @@ export default function SuggestedVideo() {
         y: rect.top,
       });
     } else {
-      // Mobile center fallback
       setPopupPos({
         x: window.innerWidth / 2 - 160,
         y: window.innerHeight / 2 - 100,
@@ -122,19 +123,32 @@ export default function SuggestedVideo() {
                 </div>
               </div>
 
-              {/* Notes Icon */}
-              <div className="px-4 pb-3 flex justify-end gap-4 text-purple-600">
-                <button title="View"><FaEye /></button>
-                <button title="Notes" onClick={() => openPopupNextToVideo(videoIndex)}>
-                  <FaPen />
-                </button>
-              </div>
+              {/* Notes Icon - only for active video */}
+              {activeVideo === videoIndex && (
+                <div className="px-4 pb-3 flex justify-end gap-4 text-purple-600">
+                  <button title="View"><FaEye /></button>
+                  <button title="Notes" onClick={() => openPopupNextToVideo(videoIndex)}>
+                    <FaPen />
+                  </button>
+                </div>
+              )}
             </div>
           );
         })}
       </div>
     </div>
   );
+
+  const handlePrevNext = (direction) => {
+    setActiveVideo((prev) => {
+      const newIndex = direction === "prev" ? prev - 1 : prev + 1;
+      if (newIndex >= 0 && newIndex < allVideos.length) {
+        openPopupNextToVideo(newIndex);
+        return newIndex;
+      }
+      return prev;
+    });
+  };
 
   return (
     <section className="min-h-screen bg-gradient-to-b from-white to-purple-50 p-6 md:p-12">
@@ -163,6 +177,34 @@ export default function SuggestedVideo() {
             className="w-full border rounded p-2 text-sm"
             placeholder="Write your notes here..."
           />
+
+          {/* Navigation Buttons */}
+          <div className="flex justify-between mt-4">
+            <button
+              onClick={() => handlePrevNext("prev")}
+              disabled={activeVideo === 0}
+              className={`px-4 py-2 rounded-md font-medium transition-transform duration-200 ${
+                activeVideo === 0
+                  ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                  : "bg-purple-600 text-white hover:scale-105"
+              }`}
+            >
+              ⬅ Previous
+            </button>
+            <button
+              onClick={() => handlePrevNext("next")}
+              disabled={activeVideo === allVideos.length - 1}
+              className={`px-4 py-2 rounded-md font-medium transition-transform duration-200 ${
+                activeVideo === allVideos.length - 1
+                  ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                  : "bg-purple-600 text-white hover:scale-105"
+              }`}
+            >
+              Next ➡
+            </button>
+          </div>
+
+          {/* Close Button */}
           <div className="flex justify-end mt-4">
             <button
               onClick={() => setActiveVideo(null)}
